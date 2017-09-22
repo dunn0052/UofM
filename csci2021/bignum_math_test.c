@@ -4,6 +4,7 @@
  *
  * orginially written by Andy Exley
  * modified by Emery Mizero
+ * completed by Kevin Dunn
  **************************/
 
 #include <stdio.h>
