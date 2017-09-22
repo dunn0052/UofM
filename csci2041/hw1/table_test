@@ -1,0 +1,28 @@
+let rec remap_columns clst alst = match clst with
+|[] -> []
+|h::t -> let rec helper2 acc h alst  = match alst with
+|[] -> acc
+|(x,y,z)::p -> if (y = h) then helper2 (z::acc) h p  else helper2 acc h p
+in helper2 [] h alst
+
+let rec unzip ls =
+  let rec helper ls acc1 acc2 = match ls with
+|[] -> (acc1, acc2)
+|(h,s)::t -> helper t (h::acc1) (s::acc2) in helper ls [] []
+
+let rec helper2 h alst acc = match alst with
+|[] -> acc
+|(x,y,z)::t -> if (y = h) then helper2 h t (z::acc) else helper2 h t acc
+
+let remap_columns clst alst =
+  let rec helper acc1 clst = match clst with
+  |[] -> make_assoc acc1
+  |h::t -> let rec helper2 acc h alst = match alst with
+    |[] -> if acc = [] then helper acc1 t else helper (acc::acc1) t
+    |(x,y,z)::p -> if (y = h) then helper2 (z::acc) h p  else helper2 acc h p
+    in helper2 [] h alst in helper [] clst
+
+
+let rec thang acc1 clst = match clst with
+|[] -> acc1
+|h::t -> thang (h::acc1) t

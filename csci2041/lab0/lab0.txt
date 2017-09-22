@@ -1,0 +1,1 @@
+I think there will be a compile error and changing the value to -1 will start the sum at -1 instead of 0
