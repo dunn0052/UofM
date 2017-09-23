@@ -28,50 +28,63 @@ let rec output_table od t = match t with
 | [] -> ()
 | r::rs -> let () = write_row r od in output_table od rs
 
-(* Now your turn. *)
-(* translate a list of rows in string form into a list of *)
-(* lists of string entries *)
+(* table_of_stringlist reads each element on the list of strings and uses the make_row function. The make_row output is consed onto a dummy list and that list is
+ consed onto the return list. The function loops this pattern until the list of strings is exhausted. It then returns the final return list.*)
+
 let rec table_of_stringlist delim rlist =
   let rec loop rlist accum = match rlist with
   |[] -> List.rev accum
   |x::t -> loop t ((make_row delim x)::accum) in loop rlist []
 
 
-(* translate a string list list into associative form, i.e. *)
-(* a list of (row, column, entry) triples *)
+(* make_assoc takes a list of a list of strings and reads each string list. It assigns the first element row 1 and column 1. It then takes the next string and assigns it
+   the same row and column + 1. Once it reaches the end of the first inner list it increments the row number and assigns columns once again starting at 1.*)
 let make_assoc rc_list = match rc_list with
   |[] -> []
-  |h::t -> let rec loop1 accum r h = match h with
+  |h::t -> let rec loop1 accum row h = match h with
     |[] -> List.rev accum
-    |q::p -> let rec loop2 accum c q = match q with
-      |[] -> loop1 accum (r+1) p
-      |x::y -> loop2 ((r,c,x)::accum) (c+1) y in loop2 accum 1 q
+    |h::t -> let rec loop2 accum col h = match h with
+      |[] -> loop1 accum (row+1) t
+      |x::y -> loop2 ((row,col,x)::accum) (col+1) y in loop2 accum 1 h
       in loop1 [] 1 rc_list
 
 
-(* remap the columns of the associative form so that the first column number in clst *)
-(* is column 1, the second column 2, ..., and any column not in clst doesn't appear *)
+(* remap_columns runs through the associative table list and collects the elements whos columns correspond with the column index list elements.
+   It then takes the list of collected elements and simply uses the previous make_assoc function to make a new column.*)
 let remap_columns clst alst =
     let rec helper acc clst = match clst with
     |[] -> (make_assoc (acc::[]))
     |h::t -> let rec helper2 h acc alst = match alst with
       |[] -> helper acc t
-      |(x,y,z)::p -> if (y = h) then helper2 h (z::acc) p else helper2 h acc p
+      |(x,y,z)::t -> if (y = h) then helper2 h (z::acc) t else helper2 h acc t
       in helper2 h acc alst in helper [] clst
-      
-(* transpose table works on the associative form *)
+
+(* transpose_table takes the associative form elements from the list, and cons the elements onto a new return list with the rows and columns switched. *)
+
 let transpose_table alist =
   let rec helper alist acc = match alist with
   |[] -> acc
   |(x,y,z)::t -> helper t ((y,x,z)::acc) in helper alist []
 
 
-(* remap the rows of the associative form so that the first row number in rlst *)
-(* is row 1, the second is row 2, ..., and any row not in rlist doesn't appear *)
+(*remap_rows takes the list of elements in associative form, transposes the row with columns and performs the column remap function. Once that is returned it is then
+  transposed once again to return the remapped rows instead of columns. *)
+
 let remap_rows rlst alst = transpose_table (remap_columns rlst (transpose_table alst))
 
-(* here's a tricky one! *)
-let table_of_assoc alist = []
+(* The table_of_assoc function sorts the list of associative entries. It then begins at row 1, column 1 and continues putting the values of each consecutive
+   Column entry  into a dummy list. If a column isn't present in the row, it then tries with column + 1 until it reaches the end of the columns. Once it reaches
+   The end of the columns it sets columns back to 1 and incriments the row number and cons the list of elements onto the eventual return list.
+   It then does the column search and pull again and again until it reaches the end of the original list. Once the end has been reached, it returns the final return list*)
+
+let table_of_assoc ls = match (List.sort compare ls) with
+|[] -> []
+|h::t -> let rec loop accu row ls = match ls with
+  |[] -> (List.rev accu)
+  |h::t -> (*let col = 1 in *)let rec ele_grab col row ls acc = match ls with
+    |[] -> if (acc = []) then loop accu (row+1) t else loop ((List.rev acc)::accu) (row+1) t
+    |(x,y,z)::t -> if (x = row) then ele_grab (col + 1) row t (z::acc) else ele_grab (col + 1) row t acc
+    in ele_grab 1 row ls [] in loop [] 1 ls
 
 (* OK, more free stuff *)
 let main transpose clst rlst id od =
