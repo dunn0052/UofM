@@ -202,7 +202,7 @@ int* add(int* input1, int* input2, int base) {
 	int r = 0;
 	int carry = 0;
 	int sign = input1[len1];
-    int num1, num2;
+   	int num1, num2;
 
 	len1--;
 	len2--;
@@ -334,9 +334,9 @@ int* subtract(int* input1, int* input2, int base) {
 	int resultlength = (len1 + 2);
 	int* result = (int*) malloc (sizeof(int) * resultlength);
 	int r = 0;
-    int num1, num2;
+    	int num1, num2;
     
-    //checks for negative difference, performs subtract from in2 to in1 and
+	//checks for negative difference, performs subtract from in2 to in1 and
 	// and sets flag for negative result 
 	if(less_than(input1, input2) == t_rue){
 		result = subtract(input2, input1, base);
@@ -391,10 +391,10 @@ int* perform_math(int* input1, int* input2, char op, int base) {
 	 * this code initializes result to be large enough to hold all necessary digits.
 	 * if you don't use all of its digits, just put a -1 at the end of the number.
 	 * you may omit this result array and create your own.
-     */
+    	 */
 
-    int len1 = bignum_length(input1);
-    int len2 = bignum_length(input2);
+   	int len1 = bignum_length(input1);
+   	int len2 = bignum_length(input2);
 	int resultlength = ((len1 > len2)? len1 : len2) + 1;
 	int* result = (int*) malloc (sizeof(int) * resultlength);
  
@@ -436,7 +436,6 @@ void print_usage(char* name) {
  * Result: 31
  */
 int main(int argc, char** argv) {
-
 	int input_base;
 
     int* input1;
