@@ -133,8 +133,9 @@ void integer_array_copy(int* num1, int* num2){
  */
 void bignum_print(int* num) {
 	int len = bignum_length(num);
-	if(num[len -1] == -1){
+	if(num[0] < 0){
 		printf("-");
+		num[0] *= -1;
 	}
 	
 	int i = 0;
@@ -143,7 +144,7 @@ void bignum_print(int* num) {
 	/* Then, print each digit */
 	while(num[i] > -1) {
 		//get rid of beginning zeros the easy way
-		while(num[i] == 0 && check){
+		while(num[i] == 0 && check && num[1] != -1){
 			i++;
 		}
 		check = false;
