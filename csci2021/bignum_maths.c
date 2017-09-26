@@ -433,6 +433,9 @@ int* perform_math(int* input1, int* input2, char op, int base) {
 	if(op == '>'){
 		return greater_than(input1, input2);
 	}
+	if(op == '='){
+		return equal_to(input1, input2);
+	}
 /* Write your logic for subtraction and comparison here*/
 	return result;
 }
