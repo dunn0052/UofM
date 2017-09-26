@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "bignum_math.h"
 
 
@@ -131,20 +132,23 @@ void integer_array_copy(int* num1, int* num2){
  * Expected behavior: prints characters
  */
 void bignum_print(int* num) {
-	int i;
-	if(num == NULL) { return; }
-
-	/* Handle negative numbers as you want */
-	i = 0;
-	
-	if(num[0] == -1){
+	int len = bignum_length(num);
+	if(num[len -1] == -1){
 		printf("-");
-		i = 1;
 	}
-
+	
+	int i = 0;
+	if(num == NULL) { return; }
+	bool check = true;
 	/* Then, print each digit */
-	while(num[i] >= 0) {
-		if(num[i] < 9){
+	while(num[i] > -1) {
+		//get rid of beginning zeros the easy way
+		while(num[i] == 0 && check){
+			i++;
+		}
+		check = false;
+		
+		if(num[i] <= 9){
 		printf("%d", num[i]);
 		}
 		else if(num[i] > 9){
@@ -168,6 +172,8 @@ void reverse(int* num) {
 		num[len-i-1] = temp;
 	}
 }
+
+
 
 
 /*
@@ -218,31 +224,41 @@ int* add(int* input1, int* input2, int base) {
 
 int sum_of_integer_array(int* num){
 	int len = bignum_length(num);
+	reverse(num);
 	int sum = 0;
 	int i;
 	for(i = 0; i < len; i++){
-		sum = sum + num[i];
+		sum = sum + num[i] * pow(10,i);
 	}
+	reverse(num);
 	return sum;
 }
 
 
 int* subtract(int* input1, int* input2, int base) {
+	
 	int len1 = bignum_length(input1);
 	int len2 = bignum_length(input2);
-	int resultlength = ((len1 > len2)? len1 : len2) + 2;
+	int resultlength = (len1 + 2);
 	int* result = (int*) malloc (sizeof(int) * resultlength);
 	int r = 0;
-	int sign = input1[len1];
     int num1, num2;
-    
+	if(sum_of_integer_array(input1) < sum_of_integer_array(input2)){
+		result = subtract(input2, input1, base);
+		int i = 0;
+		while(!result[i]){
+			i++;
+		}
+		result[i] *= -1;
+		return result;
+	}
 
 	len1--;
 	len2--;
 	
-
-	while (len1 >= 0 || len2 >= 0) {
-            num1 = input1[len1];
+	while(len1 >= 0)
+	{
+		num1 = input1[len1];
 
         if (len2 >= 0) {
             num2 = input2[len2];
@@ -250,24 +266,24 @@ int* subtract(int* input1, int* input2, int base) {
             num2 = 0;
         }
         
-		if(num1 < num2){
-			num1 = num1 + base;
+        if(num1 < num2)
+        {
+        	input1[len1 -1]--;
+        	num1 = num1 + base;
+        	result[r] = (num1 - num2);
+		}
+		else
+		{
 			result[r] = (num1 - num2);
-			input1[len1 - 1]--;
 		}
-		else if(num2 >= 0 && num1 >= num2){
-			result[r] = (num1 - num2);
-		}
-		if(num1 == 0){
-			break;;
-		}
-		
-		len1--;
-		len2--;
-		r++;
-    }
-	result[r] = sign;
+	len1--;
+	len2--;
+	r++;
+	}
+	result[r] = -1;
+	int i = 0;
 	reverse(result);
+	printf("\n");
 	return result;
 }
 
