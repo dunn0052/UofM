@@ -12,25 +12,12 @@
 #include <math.h>
 #include "bignum_math.h"
 
-	//false spelled in base 36
+	//false spelled in base 36 - used to print bool with bignum_print
 	int f_alse[6] = {15,10,21,28,14,-1};
-	/*f_alse[0] = 15;
-	f_alse[1] = 10;
-	f_alse[2] = 21;
-	f_alse[3] = 28;
-	f_alse[4] = 14;
-	f_alse[5] = -1;
-	*/
 	
-	//true spelled in base 36
+	//true spelled in base 36 - used to print bool with bignum_print
 	int t_rue[5] = {29,27,30,14,-1};
-	/*t_rue = (int*) malloc(5);
-	t_rue[0] = 29;
-	t_rue[1] = 27;
-	t_rue[2] = 30;
-	t_rue[3] = 14;
-	t_rue[4] = -1;
-*/
+
 
 /*
  * Returns true if the given char is a digit from 0 to 9
@@ -135,21 +122,8 @@ int bignum_length(int* num) {
 	return len;
 }
 
-void integer_array_copy(int* num1, int* num2){
-	int len = bignum_length(num1);
-	int i = 0;
-	while(i < len){
-		num2[i] = num1[i];
-		i++;
-	}
-}
 
-/*
- * TODO
- * Prints out a bignum using digits and lower-case characters
- * Current behavior: prints integers
- * Expected behavior: prints characters
- */
+//modified bignum_print - prints everything!
 void bignum_print(int* num) {
 	// handles negative numbers
 	if(num[0] < 0){
@@ -244,18 +218,8 @@ int* add(int* input1, int* input2, int base) {
 
 
 
-int sum_of_integer_array(int* num){
-	int len = bignum_length(num);
-	reverse(num);
-	int sum = 0;
-	int i;
-	for(i = 0; i < len; i++){
-		sum = sum + num[i] * pow(10,i);
-	}
-	reverse(num);
-	return sum;
-}
 
+//checks length then traverses array for the first digit difference
 int* less_than(int* input1, int* input2){
 
 	
@@ -286,6 +250,7 @@ int* less_than(int* input1, int* input2){
 	
 }
 
+//checks length then traverses array for the first digit difference
 int* greater_than(int* input1, int* input2){
 
 	int len1 = bignum_length(input1);
@@ -315,6 +280,7 @@ int* greater_than(int* input1, int* input2){
 	
 }
 
+//checks length then traverses array for the first digit difference
 int* equal_to(int* input1, int* input2){
 
 	
@@ -355,7 +321,8 @@ int* subtract(int* input1, int* input2, int base) {
 	int r = 0;
     int num1, num2;
     
-    //check for negative num
+    //checks for negative difference, performs subtract from in2 to in1 and
+	// and sets flag for negative result 
 	if(less_than(input1, input2) == t_rue){
 		result = subtract(input2, input1, base);
 		int i = 0;
@@ -395,6 +362,11 @@ int* subtract(int* input1, int* input2, int base) {
 	}
 	result[r] = -1;
 	int i = 0;
+	while(i < r){
+	printf("%d", result[i]);
+	i++;	
+	}
+	printf("\n");
 	reverse(result);
 	printf("\n");
 	return result;
