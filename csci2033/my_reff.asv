@@ -1,0 +1,16 @@
+function A = my_reff(A)
+for y = 1:(size(A,2)-1)
+    disp(A);
+    [val,index] = max(A(y:(size(A,1)),y));
+    disp(val);
+    disp(index+y-1);
+    A = scaling(A,y,1/A(y,y));
+    for x = y:(size(A,1)-1)
+        A = replacement(A,x+1,y,-A(x+1,y));
+    end
+    j = y;
+        while (y > 1) && (j > 0)
+            A = replacement(A,y-,y,-A(x-j,y));
+            j = j - 1;
+        end
+end
