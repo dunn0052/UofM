@@ -214,6 +214,8 @@ int* add(int* input1, int* input2, int base) {
 	return result;
 }
 
+
+
 int sum_of_integer_array(int* num){
 	int len = bignum_length(num);
 	int sum = 0;
@@ -225,45 +227,51 @@ int sum_of_integer_array(int* num){
 }
 
 
-int* subtract(int* input1, int* input2, int base){
+int* subtract(int* input1, int* input2, int base) {
+	//printf("minus");
 	int len1 = bignum_length(input1);
 	int len2 = bignum_length(input2);
-	reverse(input1);
-	reverse(input2);
-	int i = 0;
-	int r = 0;	
-	int* result = (int*) malloc(len1 + 1);
-	
-	if(sum_of_integer_array(input2) > sum_of_integer_array(input1)){
-		result = subtract(input2, input1, base);
-		bignum_print(result);
-		reverse(result);
-		int r = bignum_length(result);
-		result[r] = -1;
-		reverse(result);
-		return result;
-	}
-	
-	while(i < len1){
-		if(input1[i] < input2[i]){
-			input1[i] = input1[i] + base;
-			input1[i + 1]--;
-			result[r] = (input1[i] - input2[i]);
+	int resultlength = ((len1 > len2)? len1 : len2) + 2;
+	int* result = (int*) malloc (sizeof(int) * resultlength);
+	int r = 0;
+	int carry = 0;
+	int sign = input1[len1];
+    int num1, num2;
+    
+
+	len1--;
+	len2--;
+
+	while (len1 >= 0 || len2 >= 0) {
+        if (len1 >= 0) {
+            num1 = input1[len1];
+        } else {
+            num1 = 0;
+        }
+
+        if (len2 >= 0) {
+            num2 = input2[len2];
+        } else {
+            num2 = 0;
+        }
+        
+		if(num1 < num2){
+			num1 = num1 + base;
+			result[r] = (num1 - num2);
+			input1[len1 - 1]--;
 		}
-		else if(input2[i] >= 0 && input1[i] >= input2[i]){
-			result[r] = (input1[i] - input2[i]);
+		else if(num2 >= 0 && num1 >= num2){
+			result[r] = (num1 - num2);
 		}
-		else{
-			result[r] = input1[i];
-		}
-		i++;
+		
+		len1--;
+		len2--;
 		r++;
-	}
-	result[r] = -1;
+    }
+	result[r] = sign;
 	reverse(result);
 	return result;
-	}
-	
+}
 
 
 /*
@@ -353,6 +361,11 @@ int main(int argc, char** argv) {
 
 	input1 = string_to_integer_array(argv[2]);
     input2 = string_to_integer_array(argv[4]);
+    
+    bignum_print(input1);
+    printf("\n");
+    bignum_print(input2);
+    printf("\n");
 
     result = perform_math(input1, input2, argv[3][0], input_base);
 

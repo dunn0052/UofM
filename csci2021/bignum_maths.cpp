@@ -228,6 +228,7 @@ int sum_of_integer_array(int* num){
 
 
 int* subtract(int* input1, int* input2, int base) {
+	//printf("minus");
 	int len1 = bignum_length(input1);
 	int len2 = bignum_length(input2);
 	int resultlength = ((len1 > len2)? len1 : len2) + 2;
@@ -239,10 +240,13 @@ int* subtract(int* input1, int* input2, int base) {
 
 	len1--;
 	len2--;
-	
 
 	while (len1 >= 0 || len2 >= 0) {
+        if (len1 >= 0) {
             num1 = input1[len1];
+        } else {
+            num1 = 0;
+        }
 
         if (len2 >= 0) {
             num2 = input2[len2];
@@ -254,15 +258,9 @@ int* subtract(int* input1, int* input2, int base) {
 			num1 = num1 + base;
 			result[r] = (num1 - num2);
 			input1[len1 - 1]--;
-			if(input1[len1 -1] == -1){
-				input1[len1 - 1] += base;
-			}
 		}
 		else if(num2 >= 0 && num1 >= num2){
 			result[r] = (num1 - num2);
-		}
-		if(num1 == 0){
-			break;;
 		}
 		
 		len1--;
@@ -362,9 +360,14 @@ int main(int argc, char** argv) {
 
 	input1 = string_to_integer_array(argv[2]);
     input2 = string_to_integer_array(argv[4]);
+    
+    bignum_print(input1);
+    printf("\n");
+    bignum_print(input2);
+    printf("\n");
 
     result = perform_math(input1, input2, argv[3][0], input_base);
-	
+
     printf("Result: ");
     bignum_print(result);
 	printf("\n");

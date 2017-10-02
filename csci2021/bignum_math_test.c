@@ -369,6 +369,55 @@ int* add(int* input1, int* input2, int base) {
 	return result;
 }
 
+int* subtract(int* input1, int* input2, int base) {
+	int len1 = bignum_length(input1);
+	int len2 = bignum_length(input2);
+	int resultlength = ((len1 > len2)? len1 : len2) + 2;
+	int* result = (int*) malloc (sizeof(int) * resultlength);
+	int r = 0;
+	int carry = 0;
+	int sign = input1[len1];
+    int num1, num2;
+
+	reverse(input1);
+	reverse(input2);
+
+	len1++;
+	len2++;
+
+	while (len1 >= 0 || len2 >= 0) {
+        if (len1 >= 0) {
+            num1 = input1[len1];
+        } else {
+            num1 = 0;
+        }
+
+        if (len2 >= 0) {
+            num2 = input2[len2];
+        } else {
+            num2 = 0;
+        }
+        
+		if(num1 < num2){
+			num1 = num1 + base;;
+			result[r] = (num1 - num2);
+			input1[len1 - 1]--;
+		}
+		else if(num2 >= 0 && num1 >= num2){
+			result[r] = (num1 - num2);
+		}
+		else{
+			result[r] = num1;
+		}
+		len1--;
+		len2--;
+		r++;
+    }
+	result[r] = sign;
+	reverse(result);
+	return result;
+}
+
 
 /*
  * TODO
@@ -395,7 +444,7 @@ int* perform_math(int* input1, int* input2, char op, int base) {
 	}
 	if(op == '-'){
 		printf("minus");
-	//	return subtract(input1, input2, base);
+		return subtract(input1, input2, base);
 	}
 	if(op == '<'){
 		return less_than(input1, input2);

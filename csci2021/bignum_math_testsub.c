@@ -4,6 +4,7 @@
  *
  * orginially written by Andy Exley
  * modified by Emery Mizero
+ * completed by Kevin Dunn
  **************************/
 
 #include <stdio.h>
@@ -79,9 +80,7 @@ bool valid_base(int base) {
  * that is: digits 0-9, letters A-Z, a-z
  * and it should not violate the given base and should not handle negative numbers
  */
-bool valid_input(char* input, int base) {
-	return true;
-}
+
 
 /*
  * converts from an array of characters (string) to an array of integers
@@ -105,6 +104,34 @@ int* string_to_integer_array(char* str) {
 	return result;
 }
 
+void integer_array_copy(int* num1, int* num2){
+	int len = bignum_length(num1);
+	int i = 0;
+	while(i < len){
+		num2[i] = num1[i];
+		i++;
+	}
+}
+
+bool valid_input(char* input, int base) {
+	if(input[0] = '-'){
+		return false;
+	}
+	int i = 0;
+	int len = bignum_length(string_to_integer_array(input));
+	int* num;
+	num = (int*) malloc(len);
+	integer_array_copy(string_to_integer_array(input), num);
+	while(i < len){
+		if(num[i] >= base){
+			return false;
+		}
+	i++;
+	}
+	
+	return true;
+}
+
 /*
  * finds the length of a bignum... 
  * simply traverses the bignum until a negative number is found.
@@ -113,15 +140,6 @@ int bignum_length(int* num) {
 	int len = 0;
 	while(num[len] >= 0) { len++; }
 	return len;
-}
-
-void integer_array_copy(int* num1, int* num2){
-	int len = bignum_length(num1);
-	int i = 0;
-	while(i < len){
-		num2[i] = num1[i];
-		i++;
-	}
 }
 
 /*
@@ -135,26 +153,19 @@ void bignum_print(int* num) {
 	if(num == NULL) { return; }
 
 	/* Handle negative numbers as you want */
-	i = 0;
-	
-	if(num[0] == -1){
-		printf("-");
-		i = 1;
-	}
+	i = bignum_length(num);
 
 	/* Then, print each digit */
-	while(num[i] >= 0) {
-		if(num[i] < 9){
+	for(i = 0; num[i] >= 0; i++) {
+		if(num[i] < 9 ){
 		printf("%d", num[i]);
 		}
 		else if(num[i] > 9){
 			printf("%c", num[i] + 87);
 		}	
-		i++;
 	}
 	printf("\n");
 }
-
 
 /*
  *	Helper for reversing the result that we built backward.
@@ -169,6 +180,150 @@ void reverse(int* num) {
 	}
 }
 
+int* less_than(int* input1, int* input2){
+	//false spelled in base 36
+	int* f_alse;
+	f_alse = (int*) malloc(6);
+	f_alse[0] = 15;
+	f_alse[1] = 10;
+	f_alse[2] = 21;
+	f_alse[3] = 28;
+	f_alse[4] = 14;
+	f_alse[5] = -1;
+	
+	
+	//true spelled in base 36
+	int* t_rue;
+	t_rue = (int*) malloc(5);
+	t_rue[0] = 29;
+	t_rue[1] = 27;
+	t_rue[2] = 30;
+	t_rue[3] = 14;
+	t_rue[4] = -1;
+	
+	int len1 = bignum_length(input1);
+	int len2 = bignum_length(input2);
+	reverse(input1);
+	reverse(input2);
+	if(len1 < len2){
+		return t_rue;
+	}
+	else if(len1 == len2){
+		while(input1[len1] == input2[len1]){
+			if(len1 == 0) 
+			{
+				return f_alse;
+			}
+			len1--;
+		}
+		if(input1[len1] < input2[len1])
+		{
+			return t_rue;
+		}
+		else if(input1[len1] > input2[len1]){
+			return f_alse;
+		}
+	}
+	return f_alse;
+	
+}
+
+int* greater_than(int* input1, int* input2){
+	//false spelled in base 36
+	int* f_alse;
+	f_alse = (int*) malloc(6);
+	f_alse[0] = 15;
+	f_alse[1] = 10;
+	f_alse[2] = 21;
+	f_alse[3] = 28;
+	f_alse[4] = 14;
+	f_alse[5] = -1;
+	
+	
+	//true spelled in base 36
+	int* t_rue;
+	t_rue = (int*) malloc(5);
+	t_rue[0] = 29;
+	t_rue[1] = 27;
+	t_rue[2] = 30;
+	t_rue[3] = 14;
+	t_rue[4] = -1;
+	
+	int len1 = bignum_length(input1);
+	int len2 = bignum_length(input2);
+	reverse(input1);
+	reverse(input2);
+		if(len1 > len2){
+		return t_rue;
+	}
+	else if(len1 == len2){
+		while(input1[len1] == input2[len1]){
+			if(len1 == 0) 
+			{
+				return f_alse;
+			}
+			len1--;
+		}
+		if(input1[len1] > input2[len1])
+		{
+			return t_rue;
+		}
+		else if(input1[len1] < input2[len1]){
+			return f_alse;
+		}
+	}
+	return f_alse;
+	
+}
+
+int* equal_to(int* input1, int* input2){
+	//false spelled in base 36
+	int* f_alse;
+	f_alse = (int*) malloc(6);
+	f_alse[0] = 15;
+	f_alse[1] = 10;
+	f_alse[2] = 21;
+	f_alse[3] = 28;
+	f_alse[4] = 14;
+	f_alse[5] = -1;
+	
+	
+	//true spelled in base 36
+	int* t_rue;
+	t_rue = (int*) malloc(5);
+	t_rue[0] = 29;
+	t_rue[1] = 27;
+	t_rue[2] = 30;
+	t_rue[3] = 14;
+	t_rue[4] = -1;
+	
+	int len1 = bignum_length(input1);
+	int len2 = bignum_length(input2);
+	reverse(input1);
+	reverse(input2);
+		if(len1 > len2){
+		return f_alse;
+	}
+	else if(len1 == len2){
+		while(input1[len1] == input2[len1]){
+			if(len1 == 0) 
+			{
+				return t_rue;
+			}
+			len1--;
+		}
+		if(input1[len1] > input2[len1])
+		{
+			return f_alse;
+		}
+		else if(input1[len1] < input2[len1]){
+			return f_alse;
+		}
+	}
+	return f_alse;
+	
+}
+	
 
 /*
  * used to add two numbers with the same sign
@@ -214,35 +369,27 @@ int* add(int* input1, int* input2, int base) {
 	return result;
 }
 
-
-
-int sum_of_integer_array(int* num){
-	int len = bignum_length(num);
-	int sum = 0;
-	int i;
-	for(i = 0; i < len; i++){
-		sum = sum + num[i];
-	}
-	return sum;
-}
-
-
 int* subtract(int* input1, int* input2, int base) {
+	printf("minus");
 	int len1 = bignum_length(input1);
 	int len2 = bignum_length(input2);
 	int resultlength = ((len1 > len2)? len1 : len2) + 2;
 	int* result = (int*) malloc (sizeof(int) * resultlength);
 	int r = 0;
+	int carry = 0;
 	int sign = input1[len1];
     int num1, num2;
     
 
 	len1--;
 	len2--;
-	
 
 	while (len1 >= 0 || len2 >= 0) {
+        if (len1 >= 0) {
             num1 = input1[len1];
+        } else {
+            num1 = 0;
+        }
 
         if (len2 >= 0) {
             num2 = input2[len2];
@@ -254,15 +401,9 @@ int* subtract(int* input1, int* input2, int base) {
 			num1 = num1 + base;
 			result[r] = (num1 - num2);
 			input1[len1 - 1]--;
-			if(input1[len1 -1] == -1){
-				input1[len1 - 1] += base;
-			}
 		}
 		else if(num2 >= 0 && num1 >= num2){
 			result[r] = (num1 - num2);
-		}
-		if(num1 == 0){
-			break;;
 		}
 		
 		len1--;
@@ -300,6 +441,15 @@ int* perform_math(int* input1, int* input2, char op, int base) {
 	}
 	if(op == '-'){
 		return subtract(input1, input2, base);
+	}
+	if(op == '<'){
+		return less_than(input1, input2);
+	}
+	if(op == '>'){
+		return greater_than(input1, input2);
+	}
+	if(op == '='){
+		return equal_to(input1, input2);
 	}
 /* Write your logic for subtraction and comparison here*/
 	return result;
@@ -362,9 +512,12 @@ int main(int argc, char** argv) {
 
 	input1 = string_to_integer_array(argv[2]);
     input2 = string_to_integer_array(argv[4]);
+    
+    bignum_print(input1);
+    bignum_print(input2);
 
     result = perform_math(input1, input2, argv[3][0], input_base);
-	
+
     printf("Result: ");
     bignum_print(result);
 	printf("\n");
