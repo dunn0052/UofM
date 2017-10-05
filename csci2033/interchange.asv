@@ -1,2 +1,0 @@
-function interchange(A, i, j)
-a = A(
